@@ -60,30 +60,22 @@ function App() {
           ref={webcamRef}
           muted={true} 
           style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
+            position: 'absolute',
+            textAlign: 'center',
             zindex: 9,
-            width: 640,
-            height: 480,
+            width: '90vw',
+            height: '90wh',
           }}
         />
 
         <canvas
           ref={canvasRef}
           style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
+            position: 'absolute',
+            textAlign: 'center',
             zindex: 8,
-            width: 640,
-            height: 480,
+            width: '90vw',
+            // height: '80vh',
           }}
         />
       </header>
