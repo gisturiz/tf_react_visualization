@@ -1,19 +1,26 @@
 // Import dependencies
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import "./App.css";
 import { drawRect } from './utilities';
+import { isMobile } from 'react-device-detect';
+import switchCamImg from './icons8-switch-camera-96.png';
 
 function App() {
+  // Camera state
+  const facing_user = 'user';
+  const facing_env = 'environment';
+  const [facingMode, setFacingMode] = useState(facing_user);
+
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
   // Main function
   const runCoco = async () => {
     const net = await cocossd.load();
-    
+
     //  Loop and detect hands
     setInterval(() => {
       detect(net);
@@ -47,24 +54,32 @@ function App() {
       const ctx = canvasRef.current.getContext("2d");
 
       // Pass in argument to draw function
-      drawRect(obj, ctx); 
+      drawRect(obj, ctx);
     }
   };
 
-  useEffect(()=>{runCoco()});
+  const switchCamera = useCallback(() => {
+    setFacingMode(
+      prevState =>
+        prevState === facing_user ? facing_env : facing_user
+    );
+  }, []);
+
+  useEffect(() => { runCoco() });
 
   return (
     <div className="App">
       <header className="App-header">
         <Webcam
           ref={webcamRef}
-          muted={true} 
+          muted={true}
+          videoConstraints={{ facingMode }}
           style={{
             position: 'absolute',
             textAlign: 'center',
             zindex: 9,
-            width: '90vw',
-            height: '90wh',
+            width: '80vw',
+            height: '80wh',
           }}
         />
 
@@ -74,10 +89,11 @@ function App() {
             position: 'absolute',
             textAlign: 'center',
             zindex: 8,
-            width: '90vw',
+            width: '80vw',
             // height: '80vh',
           }}
         />
+        {isMobile ? (<img onClick={switchCamera} src={switchCamImg} alt="switch camera" style={{ position: 'absolute', bottom: '15px', width: '30px', cursor: 'pointer' }} />) : null}
       </header>
     </div>
   );
